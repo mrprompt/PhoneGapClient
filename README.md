@@ -16,5 +16,4 @@ To see a list of commands, run application without params:
 ```
 ./application.php help
 ```
-
-[![Build Status](https://travis-ci.org/InPhonex/PhoneGapClient.png)](https://travis-ci.org/InPhonex/PhoneGapClient)
+[![Build Status](https://travis-ci.org/InPhonex/PhoneGapClient.svg?branch=master)](https://travis-ci.org/InPhonex/PhoneGapClient)
