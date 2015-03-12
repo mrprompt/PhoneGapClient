@@ -10,6 +10,7 @@ branches:
     - development
 
 before_script:
+  - cp config/config.yml-dist config/config.yml
   - composer install --prefer-dist -o
   - php vendor/bin/phing install
 
