@@ -1,0 +1,14 @@
+language: php
+
+php:
+  - "5.5"
+  - "5.6"
+
+branches:
+  except:
+    - development
+
+before_script:
+  - composer install --prefer-dist -o
+  - php vendor/bin/phing install
+
