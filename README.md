@@ -9,7 +9,7 @@ After download the composer, run:
 
 ```
 composer.phar install --prefer-dist -o
-``` 
+```
 
 ## Usage
 To see a list of commands, run application without params:
