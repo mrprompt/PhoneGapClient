@@ -18,5 +18,3 @@ To see a list of commands, run application without params:
 ```
 
 [![Build Status](https://travis-ci.org/InPhonex/PhoneGapClient.svg?branch=master)](https://travis-ci.org/InPhonex/PhoneGapClient)
-
-
