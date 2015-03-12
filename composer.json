@@ -1,0 +1,35 @@
+{
+  "name" : "inphonex/phonegap",
+  "description" : "PhoneGap Builder API Client",
+  "require" : {
+    "symfony/console" : "~3.0@dev",
+    "symfony/yaml" : "~2.6",
+    "guzzlehttp/guzzle": "~5.0@dev",
+    "alchemy/zippy": "dev-master",
+    "respect/validation": "0.9.*@dev"
+  },
+  "require-dev" : {
+    "phing/phing" : "~2.8",
+    "phpunit/phpunit" : "~4.4.5",
+    "squizlabs/php_codesniffer" : "2.*",
+    "mockery/mockery" : "dev-master@dev",
+    "phploc/phploc" : "*",
+    "pdepend/pdepend" : "2.0.6",
+    "phpmd/phpmd" : "@stable",
+    "sebastian/phpcpd" : "*"
+  },
+  "authors" : [ {
+    "name" : "Thiago Paes",
+    "email" : "thiago.paes@inphonex.com"
+  } ],
+  "minimum-stability" : "dev",
+  "autoload" : {
+    "psr-0" : {
+      "InPhonex\\" : [ "src/", "tests/" ]
+    }
+  },
+  "license" : "MIT",
+  "config": {
+    "process-timeout": 0
+  }
+}

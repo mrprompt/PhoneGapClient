@@ -1,0 +1,7 @@
+/vendor/
+/build/
+/config/config.yml
+/.buildpath
+/.project
+/.settings/
+

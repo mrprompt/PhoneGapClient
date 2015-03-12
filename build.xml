@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model xlink:href="vendor/phing/phing/etc/phing-grammar.rng"
+        type="application/xml"
+        schematypens="http://relaxng.org/ns/structure/1.0" ?>
+<project name="InPhonex Mobile Build" default="build">
+	<property name="project.bindir" value="${project.basedir}/vendor/bin/" />
+
+	<target name="build" depends="install, update-dependencies, prepare, phploc, pdepend, phpmd, phpcpd, phpdox, test" />
+
+	<target name="install">
+		<if>
+			<available file="config.yml" type="file" filepath="${project.basedir}/config/" />
+
+			<then>
+				<echo>Config file exists! skiping...</echo>
+			</then>
+			<else>
+				<copy file="${project.basedir}/config/config.yml-dist" tofile="${project.basedir}/config/config.yml" />
+			</else>
+		</if>
+	</target>
+
+	<target name="update-code">
+		<exec executable="git" passthru="true" checkreturn="true">
+			<arg value="pull" />
+			<arg value="origin" />
+			<arg value="api_library_unification" />
+		</exec>
+	</target>
+
+	<target name="update-dependencies">
+		<exec executable="composer" passthru="true" checkreturn="true">
+			<arg value="install" />
+			<arg value="--prefer-dist" />
+			<arg value="-o" />
+		</exec>
+	</target>
+
+	<target name="test">
+		<exec executable="${project.bindir}phpunit" passthru="true" checkreturn="true">
+			<arg value="--stop-on-failure" />
+			<arg value="--stop-on-error" />
+			<arg value="--log-junit" />
+			<arg value="${project.basedir}/build/logs/junit.xml" />
+			<arg value="--coverage-clover" />
+			<arg value="${project.basedir}/build/logs/clover.xml" />
+			<arg value="--coverage-html" />
+			<arg value="${project.basedir}/build/coverage" />
+		</exec>
+	</target>
+
+	<target name="clean" unless="clean.done" description="Cleanup build artifacts">
+		<delete dir="${project.basedir}/build/api" />
+		<delete dir="${project.basedir}/build/coverage" />
+		<delete dir="${project.basedir}/build/logs" />
+		<delete dir="${project.basedir}/build/pdepend" />
+		<delete dir="${project.basedir}/build/phpdox" />
+		<property name="clean.done" value="true" />
+	</target>
+
+	<target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+		<mkdir dir="${project.basedir}/build/api" />
+		<mkdir dir="${project.basedir}/build/coverage" />
+		<mkdir dir="${project.basedir}/build/logs" />
+		<mkdir dir="${project.basedir}/build/pdepend" />
+		<mkdir dir="${project.basedir}/build/phpdox" />
+		<property name="prepare.done" value="true" />
+	</target>
+
+	<target name="lint" description="Perform syntax check of sourcecode files">
+		<apply executable="php" failonerror="true">
+			<arg value="-l" />
+
+			<fileset dir="${project.basedir}/src">
+				<include name="**/*.php" />
+			</fileset>
+
+			<fileset dir="${project.basedir}/tests">
+				<include name="**/*.php" />
+			</fileset>
+		</apply>
+	</target>
+
+	<target name="phploc" depends="prepare" description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+		<exec executable="${project.bindir}phploc">
+			<arg value="--count-tests" />
+			<arg value="--log-csv" />
+			<arg path="${project.basedir}/build/logs/phploc.csv" />
+			<arg value="--log-xml" />
+			<arg path="${project.basedir}/build/logs/phploc.xml" />
+			<arg path="${project.basedir}/src" />
+			<arg path="${project.basedir}/tests" />
+		</exec>
+	</target>
+
+	<target name="pdepend" depends="prepare" description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
+		<exec executable="${project.bindir}pdepend">
+			<arg value="--jdepend-xml=${project.basedir}/build/logs/jdepend.xml" />
+			<arg value="--jdepend-chart=${project.basedir}/build/pdepend/dependencies.svg" />
+			<arg value="--overview-pyramid=${project.basedir}/build/pdepend/overview-pyramid.svg" />
+			<arg path="${project.basedir}/src" />
+		</exec>
+	</target>
+
+	<target name="phpmd" depends="prepare" description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
+		<exec executable="${project.bindir}phpmd">
+			<arg path="${project.basedir}/src" />
+			<arg value="xml" />
+			<arg path="${project.basedir}/build/phpmd.xml" />
+			<arg value="--reportfile" />
+			<arg path="${project.basedir}/build/logs/pmd.xml" />
+		</exec>
+	</target>
+
+	<target name="phpcs" depends="prepare" description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
+		<exec executable="${project.bindir}phpcs" output="/dev/null">
+			<arg value="--report=checkstyle" />
+			<arg value="--report-file=${project.basedir}/build/logs/checkstyle.xml" />
+			<arg value="--standard=PSR2" />
+			<arg value="--extensions=php" />
+			<arg value="--ignore=autoload.php" />
+			<arg path="${project.basedir}/src" />
+		</exec>
+	</target>
+
+	<target name="phpcpd" depends="prepare" description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
+		<exec executable="${project.bindir}phpcpd">
+			<arg value="--log-pmd" />
+			<arg path="${project.basedir}/build/logs/pmd-cpd.xml" />
+			<arg path="${project.basedir}/src" />
+		</exec>
+	</target>
+
+	<target name="phpdox" depends="phploc,phpcs,phpmd" description="Generate project documentation using phpDox">
+		<exec executable="${project.bindir}phpdox" dir="${project.basedir}/build" />
+	</target>
+</project>
