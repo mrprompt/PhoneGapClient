@@ -10,10 +10,9 @@ branches:
     - development
 
 before_script:
-  - sed 's/auth_token/'"$AUTH_TOKEN"'/' config/config.yml-dist > config/config.yml
-  - sed 's/client_secret/'"$CLIENT_SECRET"'/' config/config.yml > config/config.yml
-  - sed 's/client_id/'"$CLIENT_ID"'/' config/config.yml > config/config.yml
-  - cat config/config.yml
+  - sed 's/auth_token/'"$AUTH_TOKEN"'/' ./config/config.yml-dist > ./config/config.yml
+  - sed 's/client_secret/'"$CLIENT_SECRET"'/' ./config/config.yml > ./config/config.yml
+  - sed 's/client_id/'"$CLIENT_ID"'/' ./config/config.yml > ./config/config.yml
   - composer install --prefer-dist -o
   - php vendor/bin/phing install
 
