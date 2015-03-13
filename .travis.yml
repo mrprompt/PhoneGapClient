@@ -9,10 +9,7 @@ branches:
     - development
 
 before_script:
-  - cp config/config.yml-dist config/config.yml
-  - sed 's/{auth_token}/$AUTH_TOKEN/g' ./config/config.yml | tee ./config/config.yml
-  - sed 's/{client_secret}/$CLIENT_SECRET/g' ./config/config.yml | tee ./config/config.yml
-  - sed 's/{client_id}/$CLIENT_ID/g' ./config/config.yml | tee ./config/config.yml
+  - php -r "\$var = file_get_contents('config/config.yml-dist'); \$var = str_replace(['{auth_token}', '{client_secret}', '{client_id}'], [getenv('AUTH_TOKEN'), getenv('CLIENT_SECRET'), getenv('CLIENT_ID')], \$var); file_put_contents('config/config.yml', \$var);"
   - composer install --prefer-dist -o
   - php vendor/bin/phing install
 
