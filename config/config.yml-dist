@@ -1,4 +1,4 @@
 phonegap:
-  auth_token: FILL-ME
-  client_id: FILL-ME
-  client_secret: FILL-ME
+  auth_token: {auth_token}
+  client_id: {client_id}
+  client_secret: {client_secret}
